@@ -22,7 +22,6 @@ public class WordleDictionary {
             String w = normalizeWord(s);
 
             if (isValidWord5(w)) {
-                // фильтрация дубликатов без Set
                 if (!tmp.contains(w)) {
                     tmp.add(w);
                 }
