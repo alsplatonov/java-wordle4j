@@ -13,6 +13,7 @@ public class Logger {
     public Logger(PrintWriter writer) {
         this.writer = writer;
     }
+
     // Записывает сообщение в лог
     public void log(String message) {
         writer.println(message);
