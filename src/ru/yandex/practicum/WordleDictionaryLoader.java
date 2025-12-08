@@ -17,6 +17,7 @@ public class WordleDictionaryLoader {
     public WordleDictionaryLoader(Logger logger) {
         this.logger = logger;
     }
+
     //Читает файл словаря, нормализует слова и возвращает объект WordleDictionary
     public WordleDictionary load(String path) throws DictionaryLoadException {
         List<String> all = new ArrayList<>();
