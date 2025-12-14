@@ -28,7 +28,6 @@ public class WordleDictionaryLoader {
             String line;
 
             while ((line = br.readLine()) != null) {
-                if (line.isBlank()) continue;
                 // нормализуем — приводим к нижнему регистру, удаляем лишнее
                 String normalized = WordleDictionary.normalizeWord(line);
 
@@ -44,7 +43,7 @@ public class WordleDictionaryLoader {
         }
 
         if (all.isEmpty()) {
-            throw new DictionaryLoadException("Словарь пуст: " + path);
+            throw new EmptyDictionaryException("Словарь пуст: " + path);
         }
 
         logger.log("Словарь загружен. Всего строк: " + all.size());

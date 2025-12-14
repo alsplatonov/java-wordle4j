@@ -16,19 +16,25 @@ public class WordleGame {
     private int remainingSteps;
     private final WordleDictionary dictionary;
     private final Logger logger;
+    private static final int WORD_LENGTH = 5;
+    private static final int MAX_STEPS = 6;
 
     private final List<String> guesses = new ArrayList<>(); // введённые игроком слова
     private final List<String> clues = new ArrayList<>();   // подсказки по каждому ходу
 
     public WordleGame(WordleDictionary dictionary, Logger logger) {
-        if (dictionary == null) throw new IllegalArgumentException("dictionary == null");
+        if (dictionary == null) {
+            throw new IllegalArgumentException("dictionary == null");
+        }
 
         this.dictionary = dictionary;
         this.logger = logger;
-        this.remainingSteps = 6; // по умолчанию 6 попыток
+        this.remainingSteps = MAX_STEPS;
 
         List<String> words = dictionary.getWords();
-        if (words.isEmpty()) throw new RuntimeException("Игровой словарь пуст");
+        if (words.isEmpty()) {
+            throw new EmptyDictionaryException("Игровой словарь пуст");
+        }
 
         Random random = new Random();
         this.answer = words.get(random.nextInt(words.size())); // случайный выбор слова
@@ -57,14 +63,15 @@ public class WordleGame {
      Обрабатывает попытку: проверяет слово, вычисляет подсказку "+^-",
      сохраняет историю и уменьшает число оставшихся шагов.
      */
-    public String makeGuess(String guess)
-            throws InvalidWordException, WordNotFoundInDictionaryException {
+    public String makeGuess(String guess) {
 
-        if (guess == null || guess.length() != 5)
-            throw new InvalidWordException("Слово должно состоять из 5 букв.");
+        if (guess == null || guess.length() != WORD_LENGTH) {
+            throw new InvalidWordException("Слово должно состоять из " + WORD_LENGTH + " букв.");
+        }
 
-        if (!dictionary.getWords().contains(guess))
+        if (!dictionary.getWords().contains(guess)) {
             throw new WordNotFoundInDictionaryException("Слово отсутствует в словаре.");
+        }
 
         String clue = computeClue(guess, answer);
 
@@ -118,16 +125,16 @@ public class WordleGame {
      */
     public static String computeClue(String guess, String answer) {
         // Инициализируем массив строк длиной 5 символов, по умолчанию "-"
-        String[] res = new String[5];
+        String[] res = new String[WORD_LENGTH];
         Arrays.fill(res, "-");
 
         String[] g = guess.split("");   // массив букв из угадываемого слова
         String[] a = answer.split("");  // массив букв из ответа
 
-        boolean[] usedA = new boolean[5]; // отметка, какие буквы уже использованы в ответе
+        boolean[] usedA = new boolean[WORD_LENGTH]; // отметка, какие буквы уже использованы в ответе
 
         // 1. Отмечаем буквы на правильных местах "+"
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < WORD_LENGTH; i++) {
             if (g[i].equals(a[i])) {
                 res[i] = "+";
                 usedA[i] = true;
@@ -136,7 +143,7 @@ public class WordleGame {
 
         // 2. Считаем оставшиеся буквы в ответе
         Map<String, Integer> counts = new HashMap<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < WORD_LENGTH; i++) {
             if (!usedA[i]) {
                 String c = a[i];
                 counts.put(c, counts.getOrDefault(c, 0) + 1);
@@ -144,7 +151,7 @@ public class WordleGame {
         }
 
         // 3. Отмечаем буквы, которые есть, но на других позициях "^"
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < WORD_LENGTH; i++) {
             if (res[i].equals("+")) continue;
 
             String c = g[i];

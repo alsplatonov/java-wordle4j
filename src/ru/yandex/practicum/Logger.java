@@ -19,4 +19,10 @@ public class Logger {
         writer.println(message);
         writer.flush();
     }
+
+    public void logError(String message, Throwable t) {
+        log(message);
+        t.printStackTrace(writer);
+        writer.flush();
+    }
 }
